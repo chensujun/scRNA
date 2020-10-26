@@ -1,0 +1,18 @@
+library(BoutrosLab.plotting.general);
+library(Seurat);
+library(gdata);
+source('~/svn/singleCell/myfunctions/run_qusage_seurat.R');
+source('~/svn/singleCell/myfunctions/cluster_annot_seurat.R');
+source('~/svn/singleCell/myfunctions/test_kegg.R');
+setwd('/.mounts/labs/cpcgene/private/projects/rnaseq_landscape/scRNA/scran/mast');
+conf <- read.config.file('~/svn/singleCell/master_config_scRNA.R');
+seurat.all <- readRDS(conf$sseurat_all);
+iseurat <- SetIdent(seurat.all, ident.use = ifelse(seurat.all@ident=='Mast', 1, 0));
+name <- 'mast';
+jm.out <- FindMarkers(iseurat, ident.1 = 1, ident.2 = 0, logfc.threshold = 0);
+saveRDS(jm.out, file = generate.filename('diff', name, 'rds'));
+jup <- rownames(jm.out[jm.out$p_val_adj<0.05&jm.out$avg_logFC>0, ]);
+jdn <- rownames(jm.out[jm.out$p_val_adj<0.05&jm.out$avg_logFC<0, ]);
+annot.keg <- readRDS('/.mounts/labs/cpcgene/private/projects/rnaseq_landscape/scRNA/scran/crpc_norm/raw_data/2019-07-18_database_kegg.rds');
+keg.up <- test_enrich(annot.keg, jup);
+keg.dn <- test_enrich(annot.keg, jdn);
