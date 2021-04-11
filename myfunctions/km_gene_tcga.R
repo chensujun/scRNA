@@ -2,7 +2,6 @@ library(BoutrosLab.plotting.general);
 library(BoutrosLab.plotting.survival);
 #tcga count table from TCGA-PRAD-genc19.rpkm.csv
 #tcga survival data from tcga.pdata.Rdata
-#both data courtesy of Musa
 args <- commandArgs(trailingOnly = TRUE);
 mytype <- args[1];
 mygene <- args[2];
